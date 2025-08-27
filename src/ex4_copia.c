@@ -32,7 +32,8 @@ int main() {
     /*
      * TODO 1: Abrir arquivo de origem para leitura
      */
-    fd_origem = /* TODO: abrir dados/origem.txt */;
+    fd_origem = open("dados/origem.txt", O_RDONLY);
+    /* TODO: abrir dados/origem.txt */
     
     if (fd_origem < 0) {
         perror("Erro ao abrir origem");
@@ -44,7 +45,8 @@ int main() {
      * Use flags: O_WRONLY | O_CREAT | O_TRUNC
      * Permissões: 0644
      */
-    fd_destino = /* TODO: criar dados/destino.txt */;
+    fd_destino = open("dados/destino.txt", O_WRONLY | O_CREAT | O_TRUNC, 06444);
+        /* TODO: criar dados/destino.txt */
     
     if (fd_destino < 0) {
         perror("Erro ao criar destino");
@@ -56,18 +58,18 @@ int main() {
      * TODO 3: Implementar loop de cópia
      * read() do origem, write() no destino
      */
-    while (/* TODO: condição do loop */) {
+    while ((bytes_lidos = read(fd_origem, buffer, sizeof(buffer))) > 0) {
         total_operacoes++;
         
         /*
          * TODO 4: Escrever dados no destino
          */
-        bytes_escritos = /* TODO: write no destino */;
+        bytes_escritos = write(fd_destino, buffer, bytes_lidos);;
         
         /*
          * TODO 5: Verificar se escreveu corretamente
          */
-        if (/* TODO: verificar bytes_escritos */) {
+        if (bytes_escritos != bytes_lidos) {
             perror("Erro na escrita");
             break;
         }
@@ -75,7 +77,8 @@ int main() {
         /*
          * TODO 6: Atualizar contador
          */
-        /* TODO: total_bytes += ... */;
+        /* TODO: total_bytes += ... */
+        total_bytes+=bytes_escritos;
         
         if (total_operacoes % 20 == 0) {
             printf("Progresso: %ld bytes...\n", total_bytes);
@@ -85,7 +88,7 @@ int main() {
     /*
      * TODO 7: Verificar erro de leitura
      */
-    if (/* TODO: verificar erro */) {
+    if (bytes_lidos == -1) {
         perror("Erro na leitura");
     }
     
@@ -93,6 +96,9 @@ int main() {
      * TODO 8: Fechar ambos os arquivos
      */
     /* TODO: close() dos dois file descriptors */;
+    close(fd_destino);
+    close(fd_origem);
+
     
     clock_t fim = clock();
     double tempo = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
